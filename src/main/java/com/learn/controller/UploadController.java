@@ -1,8 +1,8 @@
 package com.learn.controller;
 
-import com.learn.service.ConverterService;
-import com.learn.service.GifEncoderService;
-import com.learn.service.VideoDecoderService;
+import com.justgifit.service.ConverterService;
+import com.justgifit.service.GifEncoderService;
+import com.justgifit.service.VideoDecoderService;
 import com.madgag.gif.fmsware.AnimatedGifEncoder;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.FrameGrabber;
@@ -26,7 +26,7 @@ public class UploadController {
     private final static Logger log = LoggerFactory.getLogger(MethodHandles.lookup()
             .lookupClass());
 
-    @Value("${spring.http.multipart.location}")
+    @Value("${spring.http.multipart.location}/gif/")
     private String location;
 
     @Inject
@@ -38,7 +38,7 @@ public class UploadController {
     @Inject
     private VideoDecoderService videoDecoderService;
 
-    @RequestMapping(value = "/upload", method = RequestMethod.POST, produces = 
+    @RequestMapping(value = "/upload", method = RequestMethod.POST, produces =
             MediaType.IMAGE_GIF_VALUE)
     public String upload(@RequestPart("file") MultipartFile file,
                          @RequestParam("start") int start,
