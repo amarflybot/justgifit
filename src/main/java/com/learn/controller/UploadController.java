@@ -1,5 +1,6 @@
 package com.learn.controller;
 
+import com.justgifit.JustGifItProperties;
 import com.justgifit.service.ConverterService;
 import com.justgifit.service.GifEncoderService;
 import com.justgifit.service.VideoDecoderService;
@@ -26,9 +27,6 @@ public class UploadController {
     private final static Logger log = LoggerFactory.getLogger(MethodHandles.lookup()
             .lookupClass());
 
-    @Value("${spring.http.multipart.location}/gif/")
-    private String location;
-
     @Inject
     private ConverterService converterService;
 
@@ -38,6 +36,9 @@ public class UploadController {
     @Inject
     private VideoDecoderService videoDecoderService;
 
+    @Inject
+    private JustGifItProperties justGifItProperties;
+
     @RequestMapping(value = "/upload", method = RequestMethod.POST, produces =
             MediaType.IMAGE_GIF_VALUE)
     public String upload(@RequestPart("file") MultipartFile file,
@@ -45,13 +46,13 @@ public class UploadController {
                          @RequestParam("end") int end,
                          @RequestParam("speed") int speed,
                          @RequestParam("repeat") boolean repeat) throws IOException, FrameGrabber.Exception {
-        File videoFile = new File(location + "/" + System
+        File videoFile = new File(justGifItProperties.getLocation().getAbsolutePath() + "/" + System
                 .currentTimeMillis() + ".mp4");
         file.transferTo(videoFile);
 
         log.info("Saved video file to {}", videoFile.getAbsolutePath());
 
-        Path output = Paths.get(location + "/gif/" + System.currentTimeMillis() + ".gif");
+        Path output = Paths.get(justGifItProperties.getLocation().getAbsolutePath() + "/gif/" + System.currentTimeMillis() + ".gif");
 
         FFmpegFrameGrabber frameGrabber = videoDecoderService.read(videoFile);
         AnimatedGifEncoder gifEncoder = gifEncoderService.getGifEncoder(repeat,
